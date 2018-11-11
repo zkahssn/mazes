@@ -6,10 +6,8 @@ import java.nio.file.Paths;
 
 public class ReadMaze {
     private Path FilePath;
-    private int startX = 0;
-    private int startY = 0;
-    private int endX= 0;
-    private int endY=0;
+    private int [][] startPos = {{0,0}};
+    private int [][] endPos = {{0,0}};
     private String[][] inputMaze;
     public ReadMaze(){}
 
@@ -29,21 +27,29 @@ public class ReadMaze {
                 int lineNumber = lr.getLineNumber();
                 String[] currentLine = line.split(" ");
                 if (lineNumber == 1) {
-                    inputMaze = new String[Integer.parseInt(currentLine[0])][];
+                    inputMaze = new String[Integer.parseInt(currentLine[1])][];
+                    for(int i = 0; i< inputMaze.length; i++){
+                        inputMaze[i] = new String[Integer.parseInt(currentLine[0])];
+                    }
                 }
                 else if (lineNumber == 2) {
-                    startX = Integer.parseInt(currentLine[0]);
-                    startY = Integer.parseInt(currentLine[1]);
+                    startPos[0][0] = Integer.parseInt(currentLine[1]);
+                    startPos[0][1] = Integer.parseInt(currentLine[0]);
                 }
                 else if (lineNumber == 3) {
-                    endX = Integer.parseInt(currentLine[0]);
-                    endY = Integer.parseInt(currentLine[1]);
+                    endPos[0][0] = Integer.parseInt(currentLine[1]);
+                    endPos[0][1] = Integer.parseInt(currentLine[0]);
                 }
                 else{
                     for(int i =0; i < currentLine.length; i++){
                         if(currentLine[i].equals("1")){
                             inputMaze[lineCount][i] = "#";
-
+                        }
+                        else if(lineCount == startPos[0][0] && i== startPos[0][1]){
+                            inputMaze[lineCount][i] = "S";
+                        }
+                        else if(lineCount == endPos[0][0] && i == endPos[0][1]){
+                            inputMaze[lineCount][i] = "F";
                         }
                         else {
                             inputMaze[lineCount][i] = currentLine[i];
@@ -62,7 +68,12 @@ public class ReadMaze {
         return inputMaze;
     }
 
-
+    public int[][] getStartPos(){
+        return startPos;
+    }
+    public int[][] getEndPos(){
+        return endPos;
+    }
     public static void main(String[] args) {
 
 
