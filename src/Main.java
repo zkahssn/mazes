@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 
@@ -10,11 +11,12 @@ public class Main {
         int[][] moveDown = {{1, 0}};
         int[][] moveLeft = {{-1, 0}};
         int[][] moveRight = {{1, 0}};
+        String[][] maze;
         System.out.println("Please input the filename with the extention");
         rm.setFilePath(sc.nextLine());
         if (rm.getFilePath() != null) {
             rm.readMaze();
-            String[][] maze = rm.getInputMaze();
+            maze = rm.getInputMaze();
             TraverseMaze tm = new TraverseMaze(maze, rm.getStartPos(), rm.getEndPos());
             System.out.println();
             for (int i = 0; i < maze.length; i++) {
@@ -25,6 +27,18 @@ public class Main {
 
             }
             tm.move(rm.getStartPos());
+            Set<int[][]> theFinalPath = tm.getFinalPath();
+            for(int[][] node: theFinalPath){
+                maze[node[0][0]][node[0][1]] = "*";
+            }
+            for (int i = 0; i < maze.length; i++) {
+                for (int j = 0; j < maze[i].length; j++) {
+                    System.out.print(maze[i][j] + " ");
+                }
+                System.out.println();
+
+            }
+            System.out.println();
         }
 
     }
