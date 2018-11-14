@@ -1,3 +1,4 @@
+import java.util.Deque;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class Main {
 
             }
             tm.move(rm.getStartPos());
-            Set<int[][]> theFinalPath = tm.getFinalPath();
+            Deque<int[][]> theFinalPath = tm.getPathSoStack();
             for(int[][] node: theFinalPath){
                 maze[node[0][0]][node[0][1]] = "*";
             }

@@ -1,6 +1,4 @@
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class TraverseMaze {
 
@@ -13,7 +11,7 @@ public class TraverseMaze {
     private int [][] endPos;
     private Set<int [][]> alreadyVisited = new HashSet<>();
     private Set<int [][]> pathSoFar = new HashSet<>();
-
+    private Deque<int [][]> thePathStack = new ArrayDeque<>();
 
     public TraverseMaze(String[][] traverseMaze, int[][] startPos, int[][] endPos){
         this.maze = traverseMaze;
@@ -56,8 +54,12 @@ public class TraverseMaze {
     }
 
     public String move(int[][] initialPosition){
-        alreadyVisited.add(initialPosition);
+        if(maze[initialPosition[0][0]][initialPosition[0][1]].equals("S") ){
+            //first in
+            thePathStack.add(initialPosition);
+        }
         if(maze[initialPosition[0][0]][initialPosition[0][1]].equals("F") ){
+            thePathStack.add(initialPosition);
             pathSoFar.add(initialPosition);
             return "success";
         }
@@ -65,37 +67,49 @@ public class TraverseMaze {
         int [][] newLeftPosition = moveLeft(initialPosition);
         int [][] newDownPosition = moveDown(initialPosition);
         int [][] newUpPosition = moveUp(initialPosition);
-        if(!maze[newRightPosition[0][0]][newRightPosition[0][1]].equals("#") && !isAlreadyVisted(newRightPosition) ){
+
+        if(!maze[newRightPosition[0][0]][newRightPosition[0][1]].equals("#") && !isOnStack(newRightPosition) && !isAlreadyVisted(newRightPosition)){
+            //put initial position onto the stack, as it has a valid neighbour
+            thePathStack.add(initialPosition);
+         //   thePathStack.add(newRightPosition);
             pathSoFar.add(newRightPosition);
-            alreadyVisited.add(newLeftPosition);
-            alreadyVisited.add(newDownPosition);
-            alreadyVisited.add(newUpPosition);
+//            alreadyVisited.add(newLeftPosition);
+//            alreadyVisited.add(newDownPosition);
+//            alreadyVisited.add(newUpPosition);
             move(newRightPosition);
         }
-        else if(!maze[newDownPosition[0][0]][newDownPosition[0][1]].equals("#") && !isAlreadyVisted(newDownPosition) ){
+        else if(!maze[newDownPosition[0][0]][newDownPosition[0][1]].equals("#") && !isOnStack(newDownPosition) && !isAlreadyVisted(newDownPosition)){
+            thePathStack.add(initialPosition);
+         //   thePathStack.add(newDownPosition);
             pathSoFar.add(newDownPosition);
-            alreadyVisited.add(newRightPosition);
-            alreadyVisited.add(newLeftPosition);
-            alreadyVisited.add(newUpPosition);
+//            alreadyVisited.add(newRightPosition);
+//            alreadyVisited.add(newLeftPosition);
+//            alreadyVisited.add(newUpPosition);
             move(newDownPosition);
         }
-        else if(!maze[newLeftPosition[0][0]][newLeftPosition[0][1]].equals("#") && !isAlreadyVisted(newLeftPosition)){
+        else if(!maze[newLeftPosition[0][0]][newLeftPosition[0][1]].equals("#") && !isOnStack(newLeftPosition) && !isAlreadyVisted(newLeftPosition)){
+            thePathStack.add(initialPosition);
+           // thePathStack.add(newLeftPosition);
             pathSoFar.add(newLeftPosition);
-            alreadyVisited.add(newRightPosition);
-            alreadyVisited.add(newDownPosition);
-            alreadyVisited.add(newUpPosition);
-            isAlreadyVisted(newLeftPosition);
+//            alreadyVisited.add(newRightPosition);
+//            alreadyVisited.add(newDownPosition);
+//            alreadyVisited.add(newUpPosition);
             move(newLeftPosition);
         }
-        else if(!maze[newUpPosition[0][0]][newUpPosition[0][1]].equals("#") && !isAlreadyVisted(newUpPosition)){
+        else if(!maze[newUpPosition[0][0]][newUpPosition[0][1]].equals("#") && !isOnStack(newUpPosition) && !isAlreadyVisted(newUpPosition)){
+            thePathStack.add(initialPosition);
+          //  thePathStack.add(newUpPosition);
             pathSoFar.add(newUpPosition);
-            alreadyVisited.add(newRightPosition);
-            alreadyVisited.add(newLeftPosition);
-            alreadyVisited.add(newDownPosition);
+//            alreadyVisited.add(newRightPosition);
+//            alreadyVisited.add(newLeftPosition);
+//            alreadyVisited.add(newDownPosition);
             move(newUpPosition);
         }
         else{
-            //at dead end, need to backtrack
+            //this is a dead end
+            alreadyVisited.add(initialPosition);
+            //backtrack
+            move(thePathStack.removeLast());
             System.out.println();
         }
             return "FAILURE";
@@ -115,5 +129,17 @@ public class TraverseMaze {
     public Set<int[][]> getFinalPath(){
         return pathSoFar;
     }
+    public Deque<int[][]> getPathSoStack(){
+        return thePathStack;
+    }
 
+    public boolean isOnStack(int [][] currentPosition){
+        for(int[][] node: thePathStack){
+            if(node[0][0] == currentPosition[0][0] && node[0][1] == currentPosition[0][1]){
+                return true;
+            }
+            System.out.println();
+        }
+        return false;
+    }
 }
