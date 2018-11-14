@@ -129,7 +129,7 @@ public class TraverseMaze {
     public Set<int[][]> getFinalPath(){
         return pathSoFar;
     }
-    public Deque<int[][]> getPathSoStack(){
+    public Deque<int[][]> getPathStack(){
         return thePathStack;
     }
 
