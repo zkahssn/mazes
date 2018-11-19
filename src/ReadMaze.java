@@ -15,11 +15,7 @@ public class ReadMaze {
         FilePath = Paths.get(fileName);
     }
 
-    public Path getFilePath(){
-     return FilePath;
-    }
-
-    public void readMaze(){
+    public String [][] readMaze(){
         try(LineNumberReader lr = new LineNumberReader(Files.newBufferedReader(((FilePath))))) {
             String line;
             int lineCount =0;
@@ -49,7 +45,7 @@ public class ReadMaze {
                             inputMaze[lineCount][i] = "S";
                         }
                         else if(lineCount == endPos[0][0] && i == endPos[0][1]){
-                            inputMaze[lineCount][i] = "F";
+                            inputMaze[lineCount][i] = "E";
                         }
                         else {
                             inputMaze[lineCount][i] = currentLine[i];
@@ -60,13 +56,11 @@ public class ReadMaze {
             }
             lr.close();
         } catch (IOException e) {
+            System.out.println("File does not exist");
         }
-
-    }
-
-    public String[][] getInputMaze(){
         return inputMaze;
     }
+
 
     public int[][] getStartPos(){
         return startPos;
@@ -74,13 +68,6 @@ public class ReadMaze {
     public int[][] getEndPos(){
         return endPos;
     }
-    public static void main(String[] args) {
 
-
-
-
-
-
-    }
 
 }
