@@ -1,3 +1,5 @@
+package backtrack;
+
 import java.util.*;
 
 public class TraverseMaze {
