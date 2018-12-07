@@ -2,25 +2,28 @@ package backtrack;
 
 import java.util.*;
 
-public class TraverseMaze {
+public class MazeTraverser {
 
     private int[][] moveUp = {{1, 0}};
     private int[][] moveDown = {{-1, 0}};
     private int[][] moveLeft = {{0, -1}};
     private int[][] moveRight = {{0, 1}};
     private String[][] maze;
+    Set<String> keys = new HashSet<>();
     private Set<int[][]> alreadyVisited = new HashSet<>();
     private Deque<int[][]> thePathStack = new ArrayDeque<>();
-
-    public TraverseMaze(String[][] traverseMaze) {
+    private MazeReader mr = new MazeReader();
+    public MazeTraverser(String[][] traverseMaze) {
         this.maze = traverseMaze;
+        keys.add("#");
+        keys.add("S");
+        keys.add("F");
     }
 
     public int[][] moveLeft(int[][] currentPosition) {
         int newPositionX = currentPosition[0][0] + moveLeft[0][0];
         int newPositionY = currentPosition[0][1] + moveLeft[0][1];
         int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        System.out.println();
         return newCurrentPosition;
     }
 
@@ -28,7 +31,6 @@ public class TraverseMaze {
         int newPositionX = currentPosition[0][0] + moveRight[0][0];
         int newPositionY = currentPosition[0][1] + moveRight[0][1];
         int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        System.out.println();
         return newCurrentPosition;
     }
 
@@ -36,7 +38,6 @@ public class TraverseMaze {
         int newPositionX = currentPosition[0][0] + moveDown[0][0];
         int newPositionY = currentPosition[0][1] + moveDown[0][1];
         int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        System.out.println();
         return newCurrentPosition;
 
     }
@@ -49,13 +50,19 @@ public class TraverseMaze {
 
     }
 
-    public String move(int[][] initialPosition) {
+    public boolean solveMaze(int[][] initialPosition) {
         if (maze[initialPosition[0][0]][initialPosition[0][1]].equals("S")) {
             //first in
             thePathStack.add(initialPosition);
         }
         if (maze[initialPosition[0][0]][initialPosition[0][1]].equals("E")) {
-            return "success";
+            for (int[][] node : getPathStack()) {
+                if (!keys.contains(maze[node[0][0]][node[0][1]])) {
+                    maze[node[0][0]][node[0][1]] = "X";
+                }
+            }
+            mr.printMaze(maze);
+            return true;
         }
         int[][] newRightPosition = moveRight(initialPosition);
         int[][] newLeftPosition = moveLeft(initialPosition);
@@ -64,23 +71,23 @@ public class TraverseMaze {
 
         if (!maze[newRightPosition[0][0]][newRightPosition[0][1]].equals("#") && !isOnStack(newRightPosition) && !isAlreadyVisted(newRightPosition)) {
             thePathStack.add(initialPosition);
-            move(newRightPosition);
+            solveMaze(newRightPosition);
         } else if (!maze[newDownPosition[0][0]][newDownPosition[0][1]].equals("#") && !isOnStack(newDownPosition) && !isAlreadyVisted(newDownPosition)) {
             thePathStack.add(initialPosition);
-            move(newDownPosition);
+            solveMaze(newDownPosition);
         } else if (!maze[newLeftPosition[0][0]][newLeftPosition[0][1]].equals("#") && !isOnStack(newLeftPosition) && !isAlreadyVisted(newLeftPosition)) {
             thePathStack.add(initialPosition);
-            move(newLeftPosition);
+            solveMaze(newLeftPosition);
         } else if (!maze[newUpPosition[0][0]][newUpPosition[0][1]].equals("#") && !isOnStack(newUpPosition) && !isAlreadyVisted(newUpPosition)) {
             thePathStack.add(initialPosition);
-            move(newUpPosition);
+            solveMaze(newUpPosition);
         } else {
             //this is a dead end
             alreadyVisited.add(initialPosition);
             //backtrack
-            move(thePathStack.removeLast());
+            solveMaze(thePathStack.removeLast());
         }
-        return "FAILURE";
+        return false;
     }
 
     public boolean isAlreadyVisted(int[][] currentPosition) {
