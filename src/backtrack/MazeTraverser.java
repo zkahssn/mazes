@@ -4,81 +4,81 @@ import java.util.*;
 
 public class MazeTraverser {
 
-    private int[][] moveUp = {{1, 0}};
-    private int[][] moveDown = {{-1, 0}};
-    private int[][] moveLeft = {{0, -1}};
-    private int[][] moveRight = {{0, 1}};
+    private Directions directions = new Directions();
+    private Position moveUp = directions.moveUp();
+    private Position moveDown = directions.moveDown();
+    private Position moveLeft = directions.moveLeft();
+    private Position moveRight = directions.moveRight();
     private String[][] maze;
     Set<String> keys = new HashSet<>();
-    private Set<int[][]> alreadyVisited = new HashSet<>();
-    private Deque<int[][]> thePathStack = new ArrayDeque<>();
+    private Set<Position> alreadyVisited = new HashSet<>();
+    private Deque<Position> thePathStack = new ArrayDeque<>();
     private MazeReader mr = new MazeReader();
+
     public MazeTraverser(String[][] traverseMaze) {
         this.maze = traverseMaze;
         keys.add("#");
         keys.add("S");
-        keys.add("F");
+        keys.add("E");
     }
 
-    public int[][] moveLeft(int[][] currentPosition) {
-        int newPositionX = currentPosition[0][0] + moveLeft[0][0];
-        int newPositionY = currentPosition[0][1] + moveLeft[0][1];
-        int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        return newCurrentPosition;
+    public Position moveLeft(Position currentPosition) {
+        int newPositionY = currentPosition.getY() + moveLeft.getY();
+        int newPositionX = currentPosition.getX() + moveLeft.getX();
+        return new Position(newPositionY, newPositionX);
     }
 
-    public int[][] moveRight(int[][] currentPosition) {
-        int newPositionX = currentPosition[0][0] + moveRight[0][0];
-        int newPositionY = currentPosition[0][1] + moveRight[0][1];
-        int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        return newCurrentPosition;
+    public Position moveRight(Position currentPosition) {
+        int newPositionY = currentPosition.getY() + moveRight.getY();
+        int newPositionX = currentPosition.getX() + moveRight.getX();
+        return new Position(newPositionY, newPositionX);
     }
 
-    public int[][] moveDown(int[][] currentPosition) {
-        int newPositionX = currentPosition[0][0] + moveDown[0][0];
-        int newPositionY = currentPosition[0][1] + moveDown[0][1];
-        int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        return newCurrentPosition;
+    public Position moveDown(Position currentPosition) {
+        int newPositionY = currentPosition.getY() + moveDown.getY();
+        int newPositionX = currentPosition.getX() + moveDown.getX();
+        return new Position(newPositionY, newPositionX);
 
     }
 
-    public int[][] moveUp(int[][] currentPosition) {
-        int newPositionX = currentPosition[0][0] + moveUp[0][0];
-        int newPositionY = currentPosition[0][1] + moveUp[0][1];
-        int[][] newCurrentPosition = {{newPositionX, newPositionY}};
-        return newCurrentPosition;
+    public Position moveUp(Position currentPosition) {
+        int newPositionY = currentPosition.getY() + moveUp.getY();
+        int newPositionX = currentPosition.getX() + moveUp.getX();
+        return new Position(newPositionY, newPositionX);
 
     }
 
-    public boolean solveMaze(int[][] initialPosition) {
-        if (maze[initialPosition[0][0]][initialPosition[0][1]].equals("S")) {
+    public boolean solveMaze(Position initialPosition) {
+        int X = initialPosition.getX();
+        int Y = initialPosition.getY();
+        if (maze[Y][X].equals("S")) {
             //first in
             thePathStack.add(initialPosition);
         }
-        if (maze[initialPosition[0][0]][initialPosition[0][1]].equals("E")) {
-            for (int[][] node : getPathStack()) {
-                if (!keys.contains(maze[node[0][0]][node[0][1]])) {
-                    maze[node[0][0]][node[0][1]] = "X";
+        if (maze[Y][X].equals("E")) {
+            for (Position node : getPathStack()) {
+                if (!keys.contains(maze[node.getY()][node.getX()])) {
+                    maze[node.getY()][node.getX()] = "X";
                 }
             }
             mr.printMaze(maze);
             return true;
         }
-        int[][] newRightPosition = moveRight(initialPosition);
-        int[][] newLeftPosition = moveLeft(initialPosition);
-        int[][] newDownPosition = moveDown(initialPosition);
-        int[][] newUpPosition = moveUp(initialPosition);
+        Position newRightPosition = moveRight(initialPosition);
+        Position newLeftPosition = moveLeft(initialPosition);
+        Position newDownPosition = moveDown(initialPosition);
+        Position newUpPosition = moveUp(initialPosition);
 
-        if (!maze[newRightPosition[0][0]][newRightPosition[0][1]].equals("#") && !isOnStack(newRightPosition) && !isAlreadyVisted(newRightPosition)) {
+        if (!maze[newRightPosition.getY()][newRightPosition.getX()].equals("#") && !isOnStack(newRightPosition) && !isAlreadyVisted(newRightPosition)) {
             thePathStack.add(initialPosition);
             solveMaze(newRightPosition);
-        } else if (!maze[newDownPosition[0][0]][newDownPosition[0][1]].equals("#") && !isOnStack(newDownPosition) && !isAlreadyVisted(newDownPosition)) {
+        } else if (!maze[newDownPosition.getY()][newDownPosition.getX()].equals("#") && !isOnStack(newDownPosition) && !isAlreadyVisted(newDownPosition)) {
             thePathStack.add(initialPosition);
             solveMaze(newDownPosition);
-        } else if (!maze[newLeftPosition[0][0]][newLeftPosition[0][1]].equals("#") && !isOnStack(newLeftPosition) && !isAlreadyVisted(newLeftPosition)) {
+        } else if (!maze[newLeftPosition.getY()][newLeftPosition.getX()].equals("#") && !isOnStack(newLeftPosition) && !isAlreadyVisted(newLeftPosition)) {
             thePathStack.add(initialPosition);
             solveMaze(newLeftPosition);
-        } else if (!maze[newUpPosition[0][0]][newUpPosition[0][1]].equals("#") && !isOnStack(newUpPosition) && !isAlreadyVisted(newUpPosition)) {
+        } else if (!maze[newUpPosition.getY()][newUpPosition.getX()].equals("#") && !isOnStack(newUpPosition) && !isAlreadyVisted(newUpPosition)) {
             thePathStack.add(initialPosition);
             solveMaze(newUpPosition);
         } else {
@@ -90,9 +90,9 @@ public class MazeTraverser {
         return false;
     }
 
-    public boolean isAlreadyVisted(int[][] currentPosition) {
-        for (int[][] node : alreadyVisited) {
-            if (node[0][0] == currentPosition[0][0] && node[0][1] == currentPosition[0][1]) {
+    public boolean isAlreadyVisted(Position currentPosition) {
+        for (Position node : alreadyVisited) {
+            if (node.getY() == currentPosition.getY() && node.getX() == currentPosition.getX()) {
                 return true;
             }
         }
@@ -100,13 +100,13 @@ public class MazeTraverser {
     }
 
 
-    public Deque<int[][]> getPathStack() {
+    public Deque<Position> getPathStack() {
         return thePathStack;
     }
 
-    public boolean isOnStack(int[][] currentPosition) {
-        for (int[][] node : thePathStack) {
-            if (node[0][0] == currentPosition[0][0] && node[0][1] == currentPosition[0][1]) {
+    public boolean isOnStack(Position currentPosition) {
+        for (Position node : thePathStack) {
+            if (node.getY() == currentPosition.getY() && node.getX() == currentPosition.getX()) {
                 return true;
             }
         }
