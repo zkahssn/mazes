@@ -11,6 +11,8 @@ public class MazeReader {
     private int [][] startPos = {{0,0}};
     private int [][] endPos = {{0,0}};
     private String[][] inputMaze;
+    private Position startPosition;
+    private Position endPosition;
 
     public MazeReader(){}
 
@@ -31,22 +33,20 @@ public class MazeReader {
                     inputMaze = new String[height][width];
                 }
                 else if (lineNumber == 2) {
-                    startPos[0][0] = Integer.parseInt(currentLine[1]);
-                    startPos[0][1] = Integer.parseInt(currentLine[0]);
+                    startPosition = new Position(Integer.parseInt(currentLine[1]), Integer.parseInt(currentLine[0]));
                 }
                 else if (lineNumber == 3) {
-                    endPos[0][0] = Integer.parseInt(currentLine[1]);
-                    endPos[0][1] = Integer.parseInt(currentLine[0]);
+                    endPosition = new Position(Integer.parseInt(currentLine[1]), Integer.parseInt(currentLine[0]));
                 }
                 else{
                     for(int i =0; i < currentLine.length; i++){
                         if(currentLine[i].equals("1")){
                             inputMaze[lineCount][i] = "#";
                         }
-                        else if(lineCount == startPos[0][0] && i== startPos[0][1]){
+                        else if(lineCount == startPosition.getY() && i== startPosition.getX()){
                             inputMaze[lineCount][i] = "S";
                         }
-                        else if(lineCount == endPos[0][0] && i == endPos[0][1]){
+                        else if(lineCount == endPosition.getY() && i== endPosition.getX()){
                             inputMaze[lineCount][i] = "E";
                         }
                         else {
@@ -70,11 +70,11 @@ public class MazeReader {
             System.out.println();
         }
     }
-    public int[][] getStartPos(){
-        return startPos;
+    public Position getStartPos(){
+        return startPosition;
     }
-    public int[][] getEndPos(){
-        return endPos;
+    public Position getEndPos(){
+        return endPosition;
     }
 
 

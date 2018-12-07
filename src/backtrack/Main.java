@@ -9,7 +9,7 @@ public class Main {
         MazeReader rm = new MazeReader();
         Scanner sc = new Scanner(System.in);
         String[][] maze;
-        System.out.println("Input the filename with the extention");
+        System.out.println("Input the filename with the extension");
         rm.setFilePath(sc.nextLine());
         maze = rm.readMaze();
         MazeTraverser tm = new MazeTraverser(maze);
