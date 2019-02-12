@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 
 public class MazeReader {
     private Path filePath;
-    private int [][] startPos = {{0,0}};
-    private int [][] endPos = {{0,0}};
     private String[][] inputMaze;
     private Position startPosition;
     private Position endPosition;
